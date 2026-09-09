@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Papra 小票助手</title>
+  <meta name="description" content="用中文聊天式查找 Papra 里的西班牙购物小票" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">Papra Receipt Assistant · MVP</div>
+      <h1>用中文找回你的西班牙小票</h1>
+      <p>不用记住 <em>aspirador</em>、<em>cafetera</em> 这些西班牙语。直接说“找一下我去年在 MediaMarkt 买的 Rowenta 吸尘器小票”。</p>
+    </section>
+
+    <section class="chat-card" aria-label="小票助手">
+      <div class="assistant-row">
+        <div class="avatar">P</div>
+        <div class="bubble assistant-bubble">
+          你可以直接描述商品、品牌、商店或大概年份。我会把中文商品名转换成适合 Papra OCR 全文搜索的西班牙语关键词。
+        </div>
+      </div>
+
+      <form id="search-form" class="composer">
+        <textarea id="query" rows="2" placeholder="例如：帮我找去年在 MediaMarkt 买的 Rowenta 吸尘器小票" autocomplete="off"></textarea>
+        <button id="search-button" type="submit">查找小票</button>
+      </form>
+
+      <div class="examples" aria-label="示例">
+        <button type="button" data-example="去年 MediaMarkt 买的 Rowenta 吸尘器">Rowenta 吸尘器</button>
+        <button type="button" data-example="宜家买的沙发">宜家沙发</button>
+        <button type="button" data-example="2025年买的咖啡机">2025 咖啡机</button>
+      </div>
+    </section>
+
+    <section id="status" class="status hidden"></section>
+    <section id="results" class="results" aria-live="polite"></section>
+  </main>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
