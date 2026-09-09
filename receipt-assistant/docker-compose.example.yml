@@ -1,0 +1,13 @@
+services:
+  papra-receipt-assistant:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    environment:
+      PORT: 8787
+      PAPRA_URL: ${PAPRA_URL}
+      PAPRA_API_TOKEN: ${PAPRA_API_TOKEN}
+      PAPRA_ORGANIZATION_ID: ${PAPRA_ORGANIZATION_ID}
+      PAPRA_PAGE_SIZE: ${PAPRA_PAGE_SIZE:-20}
+      PAPRA_DEMO: ${PAPRA_DEMO:-false}
