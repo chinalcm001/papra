@@ -1,0 +1,73 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1f2937;
+  background: #f5f6f8;
+  line-height: 1.5;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, textarea { font: inherit; }
+
+.shell {
+  width: min(920px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 44px 0 80px;
+}
+
+.hero { margin-bottom: 24px; }
+.eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: #6b7280; font-weight: 700; }
+.hero h1 { margin: 8px 0 10px; font-size: clamp(30px, 5vw, 48px); line-height: 1.08; letter-spacing: -.03em; }
+.hero p { margin: 0; max-width: 760px; color: #5b6472; font-size: 17px; }
+
+.chat-card, .receipt-card, .empty-card, .status {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .04);
+}
+
+.chat-card { padding: 20px; }
+.assistant-row { display: flex; gap: 12px; align-items: flex-start; }
+.avatar { width: 34px; height: 34px; border-radius: 12px; background: #111827; color: white; display: grid; place-items: center; font-weight: 800; flex: none; }
+.bubble { padding: 12px 14px; border-radius: 14px; }
+.assistant-bubble { background: #f3f4f6; color: #374151; }
+
+.composer { display: flex; gap: 10px; margin-top: 18px; }
+textarea { flex: 1; resize: vertical; min-height: 54px; max-height: 160px; border-radius: 14px; border: 1px solid #d1d5db; padding: 14px; outline: none; background: #fff; }
+textarea:focus { border-color: #9ca3af; box-shadow: 0 0 0 3px rgba(107,114,128,.12); }
+.composer button { border: 0; border-radius: 14px; background: #111827; color: white; padding: 0 20px; font-weight: 700; cursor: pointer; }
+.composer button:disabled { opacity: .55; cursor: wait; }
+
+.examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.examples button { border: 1px solid #e5e7eb; border-radius: 999px; background: white; padding: 7px 11px; color: #4b5563; cursor: pointer; }
+.examples button:hover { background: #f9fafb; }
+
+.status { margin-top: 18px; padding: 14px 16px; font-size: 14px; }
+.status.hidden { display: none; }
+.status.success { border-color: #d1fae5; background: #f0fdf4; }
+.status.error { border-color: #fecaca; background: #fef2f2; color: #991b1b; }
+.technical-query { margin-top: 5px; color: #6b7280; overflow-wrap: anywhere; }
+.result-count { margin-top: 4px; color: #4b5563; }
+
+.results { display: grid; gap: 14px; margin-top: 14px; }
+.receipt-card, .empty-card { padding: 18px; }
+.receipt-topline { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+.receipt-card h2, .empty-card h2 { margin: 0; font-size: 17px; }
+.meta { color: #6b7280; font-size: 13px; margin-top: 4px; }
+.file-icon { min-width: 44px; height: 36px; border-radius: 10px; background: #f3f4f6; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #6b7280; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.tag { padding: 3px 8px; border-radius: 999px; background: #f3f4f6; font-size: 12px; color: #4b5563; }
+.notes { margin: 12px 0 0; color: #374151; }
+.snippet { margin: 10px 0 0; color: #6b7280; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; }
+.actions a { color: #374151; font-weight: 650; text-decoration: none; }
+.actions a:hover { text-decoration: underline; }
+.actions .primary-link { color: #111827; }
+.empty-card p { color: #6b7280; margin-bottom: 0; }
+
+@media (max-width: 640px) {
+  .shell { padding-top: 24px; }
+  .composer { flex-direction: column; }
+  .composer button { min-height: 48px; }
+}
