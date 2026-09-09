@@ -1,13 +1,21 @@
 services:
-  papra-receipt-assistant:
+  papra-ledger-assistant:
     build: .
     restart: unless-stopped
     ports:
       - "8787:8787"
     environment:
       PORT: 8787
-      PAPRA_URL: ${PAPRA_URL}
-      PAPRA_API_TOKEN: ${PAPRA_API_TOKEN}
-      PAPRA_ORGANIZATION_ID: ${PAPRA_ORGANIZATION_ID}
+      PAPRA_URL: ${PAPRA_URL:-http://host.docker.internal:1221}
+      PAPRA_API_TOKEN: ${PAPRA_API_TOKEN:-}
+      PAPRA_ORGANIZATION_ID: ${PAPRA_ORGANIZATION_ID:-}
       PAPRA_PAGE_SIZE: ${PAPRA_PAGE_SIZE:-20}
       PAPRA_DEMO: ${PAPRA_DEMO:-false}
+      LEDGER_DB_PATH: /data/ledger.sqlite
+      DEFAULT_CURRENCY: ${DEFAULT_CURRENCY:-EUR}
+      TZ: ${TZ:-Europe/Madrid}
+    volumes:
+      - assistant_data:/data
+
+volumes:
+  assistant_data:
