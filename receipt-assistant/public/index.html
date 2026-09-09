@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Papra 家庭账本助手</title>
+  <meta name="description" content="文字/语音记账、查账、汇总，并用中文找回 Papra 里的西班牙小票" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="eyebrow">Papra + Ledger Assistant · v0.2</div>
+      <h1>说一句话，记账、查账、找小票</h1>
+      <p>Papra 保存原始票据；这个助手保存结构化账目。你可以用中文文字或语音操作。</p>
+    </header>
+
+    <section class="quick-grid">
+      <button data-example="昨天在 Mercadona 买菜 35.60欧">记一笔支出</button>
+      <button data-example="这个月超市花了多少">本月汇总</button>
+      <button data-example="最近10笔">最近记录</button>
+      <button data-example="找去年 MediaMarkt 买的 Rowenta 吸尘器小票">找小票</button>
+    </section>
+
+    <section id="conversation" class="conversation" aria-live="polite">
+      <article class="message assistant"><div class="avatar">P</div><div class="bubble">你可以直接说：“昨天 Lidl 买菜 46.8 欧”“这个月餐饮花了多少”“最近 10 笔”“找去年买的吸尘器小票”。</div></article>
+    </section>
+
+    <form id="chat-form" class="composer">
+      <textarea id="query" rows="2" placeholder="输入记账、查询、总结或找小票…" autocomplete="off"></textarea>
+      <div class="composer-actions">
+        <button id="voice-button" class="secondary" type="button" title="语音输入">🎙 语音</button>
+        <button id="send-button" class="primary" type="submit">发送</button>
+      </div>
+    </form>
+    <div id="voice-hint" class="hint"></div>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

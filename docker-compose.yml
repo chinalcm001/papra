@@ -1,0 +1,48 @@
+services:
+  papra-init:
+    image: alpine:3.20
+    restart: "no"
+    command: ["sh", "-c", "mkdir -p /app/app-data/db /app/app-data/documents && chown -R 1000:1000 /app/app-data"]
+    volumes:
+      - papra_data:/app/app-data
+
+  papra:
+    image: ghcr.io/papra-hq/papra:${PAPRA_IMAGE_TAG:-latest}
+    restart: unless-stopped
+    user: "1000:1000"
+    depends_on:
+      papra-init:
+        condition: service_completed_successfully
+    ports:
+      - "${PAPRA_PORT:-1221}:1221"
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET:-change-me-before-production}
+      APP_BASE_URL: ${PAPRA_APP_BASE_URL:-http://localhost:1221}
+    volumes:
+      - papra_data:/app/app-data
+
+  assistant:
+    build:
+      context: ./receipt-assistant
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - papra
+    ports:
+      - "${ASSISTANT_PORT:-8787}:8787"
+    environment:
+      PORT: 8787
+      PAPRA_URL: http://papra:1221
+      PAPRA_API_TOKEN: ${PAPRA_API_TOKEN:-}
+      PAPRA_ORGANIZATION_ID: ${PAPRA_ORGANIZATION_ID:-}
+      PAPRA_PAGE_SIZE: ${PAPRA_PAGE_SIZE:-20}
+      PAPRA_DEMO: ${PAPRA_DEMO:-false}
+      LEDGER_DB_PATH: /data/ledger.sqlite
+      DEFAULT_CURRENCY: ${DEFAULT_CURRENCY:-EUR}
+      TZ: ${TZ:-Europe/Madrid}
+    volumes:
+      - assistant_data:/data
+
+volumes:
+  papra_data:
+  assistant_data:
