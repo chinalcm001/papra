@@ -1,83 +1,68 @@
-# Papra Receipt Assistant MVP
+# Papra Ledger Assistant v0.2
 
-一个零依赖的轻量 sidecar，为 Papra 增加“中文聊天式找小票”。它不改 Papra 的存储、OCR 或数据库，只通过 Papra Public API 搜索文档，因此方便升级上游版本。
+一个轻量 sidecar：Papra 负责保存/OCR/检索原始票据，助手负责结构化记账、查询、汇总和中文聊天入口。两者解耦，方便继续跟随 Papra 上游升级。
 
-## MVP 功能
+## 已实现
 
-- 中文聊天式搜索，例如：`帮我找去年在 MediaMarkt 买的 Rowenta 吸尘器小票`
-- 常见中文商品名自动扩展为西班牙语关键词
-- 中文商店别名转换（宜家→IKEA、家乐福→Carrefour 等）
-- “去年 / 前年 / 今年”自动转换成年份关键词
-- 保留品牌、型号、年份等原始拉丁字符关键词
-- 调用 Papra 全文搜索 API
-- 展示匹配文档、OCR 摘要、标签和日期
-- 一键打开 Papra 中保存的原始小票图片/PDF
-- API Token 只保存在服务端环境变量，不暴露到浏览器
-- 内置演示模式，不连接 Papra 也能先看效果
+- 文字自然语言记账：`昨天在 Mercadona 买菜 35.60欧`
+- 语音输入：浏览器语音转文字后走同一记账流程
+- 保存前确认/修改金额、日期、分类、商店和备注
+- SQLite 独立账本，金额使用整数 cents 保存
+- 查询最近记录：`最近10笔`
+- 汇总：`这个月超市花了多少`、`今年餐饮支出多少`
+- 按分类/商店统计收入、支出、结余
+- 中文找西班牙小票：`找去年 MediaMarkt 买的 Rowenta 吸尘器小票`
+- 中文商品词扩展为西班牙语 OCR 关键词
+- 打开 Papra 保存的原始图片/PDF
+- Papra API Token 只留在服务端
 
-## 为什么第一版做成 sidecar
+## 数据结构
 
-Papra 的核心优势是稳定的文件保存、OCR 和全文搜索。第一版刻意不修改 Papra 核心代码，减少升级冲突。如果这个交互验证好用，再把组件嵌入 Papra 主界面。
+- Papra：原始小票、PDF、OCR 文本、标签等
+- Assistant SQLite：结构化交易记录
+- `receipt_document_id` 字段已预留，后续可以把一笔账直接关联到 Papra 原始小票
 
-## 先看演示
+## Portainer
 
-```bash
-PAPRA_DEMO=true node server.mjs
-```
+仓库根目录已经增加 `docker-compose.yml`，可以从 Git 仓库直接部署。详见根目录 `PORTAINER.md`。
 
-打开：`http://localhost:8787`
-
-## 连接你的 Papra
-
-1. 在 Papra 创建 API Token，至少授予 `documents:read`。
-2. 找到 Organization ID。
-3. 复制环境变量：
+## 本地启动
 
 ```bash
-cp .env.example .env
+PAPRA_DEMO=true LEDGER_DB_PATH=./data/ledger.sqlite node server.mjs
 ```
 
-4. 设置：
+打开 `http://localhost:8787`。
+
+记账本身不依赖 Papra API Token；只有“找原始小票”需要配置：
 
 ```env
-PAPRA_URL=https://你的-papra-地址
-PAPRA_API_TOKEN=你的-token
-PAPRA_ORGANIZATION_ID=你的-organization-id
-```
-
-5. 启动：
-
-```bash
-set -a
-. ./.env
-set +a
-node server.mjs
-```
-
-或 Docker：
-
-```bash
-docker compose -f docker-compose.example.yml up -d --build
+PAPRA_URL=http://papra:1221
+PAPRA_API_TOKEN=...
+PAPRA_ORGANIZATION_ID=org_...
+LEDGER_DB_PATH=/data/ledger.sqlite
+DEFAULT_CURRENCY=EUR
+TZ=Europe/Madrid
 ```
 
 ## 测试
 
-无需安装依赖：
-
 ```bash
-node --test test/search-query.test.mjs
+node --test test/search-query.test.mjs test/ledger.test.mjs
 ```
 
 ## 当前限制
 
-- 第一版使用本地词典，不调用 LLM，因此稳定、零成本，但词汇量有限。
-- 主要优化中文→西班牙语小票检索；复杂自然语言理解后续可加入可选 AI provider。
-- 演示模式的“查看原始小票”只返回说明文字；连接真实 Papra 后会代理原始文件。
+- v0.2 的意图识别和分类采用本地规则，稳定、零 API 成本，但复杂口语还不如 LLM。
+- 语音输入使用浏览器 Web Speech API；不同浏览器支持程度不同，麦克风功能通常在 HTTPS/localhost 下最可靠。
+- 当前“总结”是确定性的账本统计，不让模型自行计算金额。
+- 还没有自动从一张新小票生成记账记录；这是下一阶段最值得做的功能。
 
-## 下一版建议
+## 下一步
 
-- 可选 OpenAI / Gemini / Ollama 语义查询 provider
-- 自动识别“去年夏天”“大约 300 欧”“在 MediaMarkt 买的”等条件
-- 搜索历史与常用商品词自动学习
-- 保修期标签和到期提醒
-- 在 Papra 主界面增加小票助手入口
+1. 上传/拍照小票 → Papra OCR → 自动生成待确认账目
+2. 一笔账关联原始 Papra 小票
+3. 可选 OpenAI / Gemini / Ollama 作为复杂自然语言解析器，本地规则作为 fallback
+4. 周/月消费总结与异常支出提示
+5. 预算与分类趋势
+6. 保修/售后提醒
